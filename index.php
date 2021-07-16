@@ -2,5 +2,14 @@
 
 require_once 'src/autoload.php';
 
-$stammtisch = new Stammtisch(9);
+$stammtisch = new Stammtisch();
+$stammtisch->addTeilnehmer('Manuel');
+$stammtisch->addTeilnehmer('Björn');
+$stammtisch->addTeilnehmer('Kim');
+$stammtisch->addTeilnehmer('Andreas');
+$stammtisch->addTeilnehmer('Thomas');
+$stammtisch->addTeilnehmer('Alex');
+$stammtisch->addTeilnehmer('Dennis');
+$stammtisch->addTeilnehmer('Helmut');
+
 $stammtisch->greeting();

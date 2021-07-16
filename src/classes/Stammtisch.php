@@ -2,15 +2,20 @@
 
 class Stammtisch {
 
+   /** @var Teilnehmer[] $teilnehmer */
    private $teilnehmer;
 
-   public function __construct($teilnehmer) {
-      $this->teilnehmer = $teilnehmer;
+   public function __construct() {
+      $this->teilnehmer = array();
+   }
+
+   public function addTeilnehmer($name) {
+      $this->teilnehmer[] = new Teilnehmer($name);
    }
 
    public function greeting() {
-      for($i=1; $i<=$this->teilnehmer; $i++) {
-         echo 'Sei gegrüßt, Interkörper ' . $i . "\n";
+      foreach($this->teilnehmer as $teilnehmer) {
+         echo 'Sei gegrüßt, ' . $teilnehmer->getName() . "\n";
       }
    }
 }
