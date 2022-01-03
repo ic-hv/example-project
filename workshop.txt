@@ -1,0 +1,228 @@
+vi ~/.vim/vimrc
+---
+set tabstop=3
+set shiftwidth=3
+set expandtab
+syntax on
+---
+mkdir git-example-project
+cd git-example-project
+git init .
+git commit -m "[TASK] Initialer Commit" --allow-empty
+vi README.md
+---
+Beispiel-Projekt zur Nutzung von GIT
+---
+git add README.md
+git commit --amend
+
+2. Coding
+
+mkdir -p src/classes
+vi src/autoload.php
+---
+<?php
+
+define("ABS_DIR_ROOT", realpath(__DIR__ . '/../') . '/');
+define("ABS_DIR_CLASSES", ABS_DIR_ROOT . 'src/classes/');
+
+function myAutoloader($class_name) {
+   $file = ABS_DIR_CLASSES . $class_name . '.php';
+   if(file_exists($file)) {
+	include $file;
+        return class_exists($class_name);
+   }
+    
+   return false;
+}
+
+spl_autoload_register('myAutoloader');
+---
+git add src/autoload.php
+git commit -m "[TASK] Autoloading von Klassen innerhalb von src/classes" 
+vi src/classes/Stammtisch.php
+---
+<?php
+
+class Stammtisch {
+
+   private $teilnehmer;
+
+   public function __construct($teilnehmer) {
+      $this->teilnehmer = $teilnehmer;
+   }	
+
+   public function greeting() {
+      for($i=1; $i<=$this->teilnehmer; $i++) {
+         echo 'Sei gegrüßt, Interkörper ' . $i . "\n";
+      }
+   }
+}
+---
+git add .
+git commit -m "[TASK] Stammtisch-Klasse definieren"
+vi index.php
+--
+<?php
+
+require_once 'src/autoload.php';
+
+$stammtisch = new Stammtisch(7);
+$stammtisch->greeting();
+--
+php index.php
+git add .
+git commit -m "[TASK] index.php ergänzen"
+git commit --amend # [TASK] Stammtisch-Begrüssung via index.php
+git log
+git branch
+git branch feature-teilnehmer 
+git branch
+git checkout -b feature-datetime
+git branch
+vi src/classes/Stammtisch.php
+---
+public static function getTimeString() {
+   return (new DateTime())->format(DATE_ATOM);
+}
+
+public function greeting() {
+   echo 'Zeitpunkt des Stammtischs: ' . self::getTimeString() ."\n\n";
+---
+git commit -a -m "[TASK] Stammtisch-Zeitpunkt ergänzen"
+git log
+git checkout master
+git log
+git checkout -b feature-datetime-other
+vi src/classes/Stammtisch.php
+---
+public function getTimeString() {
+   return (new DateTime())->format(DATE_ATOM);
+}
+
+public function greeting() {
+   echo 'Zeitpunkt des Stammtischs: ' . $this->getTimeString() ."\n\n";
+---
+git commit -a -m "[TASK] Zeitpunkt des Stammtischs integrieren"
+git checkout master
+git merge feature-datetime
+git log
+git branch -d feature-datetime
+git merge feature-datetime-other # Konflikt lösen
+git commit
+git add .
+git commit
+git log
+git reset HEAD~2
+git status
+git reset --hard
+git status
+git log
+git reflog
+git reset --hard <commit_id>
+git log
+git reset HEAD~1
+git log
+git remote
+vi .git/config
+git remote add origin git@github.com:ic-hv/git-example-project.git
+git remote -v
+vi .git/config
+git push origin
+git push origin master
+git push origin
+git branch -vv
+git push --set-upstream origin master
+git branch -vv
+git push
+git log
+git checkout feature-teilnehmer
+vi src/classes/Teilnehmer.php
+---
+<?php
+
+class Teilnehmer {
+
+   private $name;
+
+   public function __construct($name) {
+      $this->name = $name;
+   }
+
+   public function getName() {
+      return $this->name;
+   }  
+}
+---
+vi src/classes/Stammtisch.php
+---
+<?php
+
+class Stammtisch {
+
+   /** @var Teilnehmer[] $teilnehmer */
+   private $teilnehmer;
+
+   public function __construct() {
+      $this->teilnehmer = array();
+   }
+
+   public function addTeilnehmer($name) {
+      $this->teilnehmer[] = new Teilnehmer($name);
+   }
+
+   public function greeting() {
+      foreach($this->teilnehmer as $teilnehmer) {
+         echo 'Sei gegrüßt, ' . $teilnehmer->getName() . "\n";
+      }
+   }
+}
+---
+vi src/index.php
+---
+$stammtisch = new Stammtisch();
+
+$stammtisch->addTeilnehmer('Heiko');
+$stammtisch->greeting();
+---
+git add src/classes/Teilnehmer.php
+git commit -m "[TASK] Teilnehmer-Klasse definieren"
+git commit -a -m "[TASK] Stammtisch-Teilnehmer namentlich begrüssen"
+vi src/index.php
+---
+$stammtisch->addTeilnehmer('');
+---
+git commit -a -m "[TASK] Alle anwesenden Stammtisch-Teilnehmer hinzufügen"
+# PhpStorm ankündigen
+vi .gitignore
+---
+.idea/
+---
+git add .
+git commit -m "[TASK] Phpstorm-Konfiguration nicht tracken"
+# PhpStorm aufmachen 
+# Settings, Git-Tab und Branch-Selektor demonstrieren
+# feature-datetime-other pushen
+# feature-datetime-other remote löschen
+# feature-datetime-other lokal löschen
+# Log-Baum inspizieren
+git log # Hinweis auf die commit-Ids
+# merge von master demonstrieren
+git log # Hinweis auf die commit-Ids
+# rebase auf master demonstrieren
+git log # Hinweis auf die commit-Ids
+# Interactive Rebasing demonstrieren
+git log # Hinweis auf die commit-Ids
+# Darauf hinweisen das man niemals Commits rebasen sollte die bereits gepusht sind (Golden Rule - https://www.daolf.com/posts/git-series-part-2/)
+# Rebase mittels reflog via PhpStorm-Terminal rückgängig machen
+# Log im Git-Tab inspizieren
+# feature-teilnehmer Branch via PhpStorm pushen
+# Push-Kommando in Git-Console-Tab inspizieren
+# Auf äquivalentes Kommando hinweisen: git push -u origin feature-teilnehmer
+# Einrückung in Teilnehmer.php anpassen
+# Commiting und Excluding via PhpStorm demonstrieren
+# Setter in Teilnehmer.php einführen und Konstruktor entfernen
+# Committen und Pushen via PhpStorm
+# master: Checkout and Rebase onto Current
+
+## Debugging demonstrieren (Browser + Kommandozeile)
